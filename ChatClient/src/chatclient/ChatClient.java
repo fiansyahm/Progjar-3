@@ -72,7 +72,7 @@ public class ChatClient {
                           msg=new Message();
                           msg.setSender(username);
 			  msg.setText("<public> "+text);
-                          System.out.println("<public> "+text);
+//                          System.out.println("<public> "+text);
                    
 		 	  ous.writeObject(msg);
 			  ous.flush();
