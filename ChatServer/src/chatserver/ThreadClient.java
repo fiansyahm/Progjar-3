@@ -31,23 +31,28 @@ public class ThreadClient extends Thread{
 		this.threadServer=threadServer;
 		
 	}
+    
         @Override
 	public void run() {
 		while(true) {
-			try {
-				Message msg=(Message) this.ois.readObject();
-				this.threadServer.sendToAll(msg);
-				
-			} catch (ClassNotFoundException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+			
+                    try {
+                        Message msg=(Message) this.ois.readObject();
+                        
+                        this.threadServer.sendToAll(msg);
+                        
+                    } catch (IOException | ClassNotFoundException ex) {
+                        continue;
+//                        Logger.getLogger(ThreadClient.class.getName()).log(Level.SEVERE, null, ex);
+                    }
+			
 			
 		}
 	}
 	
 	public void send(Message msg) {
 		try {
+                       
 			this.ous.writeObject(msg);
 			this.ous.flush();
 		} catch (IOException e) {

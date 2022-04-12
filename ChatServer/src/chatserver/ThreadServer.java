@@ -14,17 +14,30 @@ import com.chatobject.Message;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Hashtable;
+import javax.net.ServerSocketFactory;
+import javax.net.SocketFactory;
+import javax.net.ssl.SSLServerSocket;
+import javax.net.ssl.SSLServerSocketFactory;
+import javax.net.ssl.SSLSocketFactory;
 
 public class ThreadServer extends Thread {
 	private Hashtable<String,ThreadClient> ClientList;
 	private ServerSocket server;
+        
+        ArrayList<String> users ;
 	
 	public ThreadServer() throws IOException {
 //		try {
 			this.ClientList=new Hashtable<String,ThreadClient>();
-			this.server=new ServerSocket(6666);
+                        
+//                        ServerSocketFactory serverSocketFactory=SSLServerSocketFactory.getDefault();
+//                        this.server=(SSLServerSocket) serverSocketFactory.createServerSocket(6666);
+			
+                        this.server=new ServerSocket(6666);
+                        users = new ArrayList<String>();
 			
 //			
 //		} catch (IOException e) {
@@ -54,6 +67,29 @@ public class ThreadServer extends Thread {
 	}
 	
 	public void sendToAll(Message msg) {
+            String totaluserstring="User Online\n";
+            if(msg.getText().indexOf("Total User")>=0){
+//                System.out.println("muncul total user");
+                for (String i : users) {
+                                totaluserstring=totaluserstring+"\n"+i;
+                }
+                msg.setText(totaluserstring);
+            }
+            else if(msg.getText().indexOf("login")>=0){
+                            System.out.println("Account "+msg.getSender()+" Has logined");
+                            if(!users.contains(msg.getSender()))
+                                users.add(msg.getSender());
+            }
+            else if(msg.getText().indexOf("logout")>=0){
+                                users.remove(msg.getSender());
+            }
+            else{
+                System.out.println(msg.getSender()+": "+msg.getText());
+            }
+                
+            
+            
+             
 		//iterate through all clients
 		Enumeration<String> e=this.ClientList.keys();
 		//send the message
